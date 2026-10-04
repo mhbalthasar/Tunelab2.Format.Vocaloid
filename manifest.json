@@ -1,0 +1,34 @@
+{
+  "id": "com.daisium.vocaloidformatsupport",
+  "name": "VOCALOID Format Support",
+  "version": "1.0.0",
+  "author": "Daisium",
+  "description": "为 DaisiumForTuneLab 参数体系提供 VOCALOID 工程格式的导入/导出：VSQX (VOCALOID3/4)、VSQ (VOCALOID2)、VPR (VOCALOID5/6)。纯 C# 实现，参数映射到 Daisium 参数体系。",
+  "sdk-version": "1.0",
+  "extensions": [
+    {
+      "type": "format",
+      "suffixes": ["vsqx"],
+      "name": "VOCALOID VSQX",
+      "introduction": "Introduction.md",
+      "class": "VocaloidFormatSupport.VSQXFormat",
+      "assembly": "VocaloidFormatSupport.dll"
+    },
+    {
+      "type": "format",
+      "suffixes": ["vsq"],
+      "name": "VOCALOID VSQ",
+      "introduction": "Introduction.md",
+      "class": "VocaloidFormatSupport.VSQFormat",
+      "assembly": "VocaloidFormatSupport.dll"
+    },
+    {
+      "type": "format",
+      "suffixes": ["vpr"],
+      "name": "VOCALOID VPR",
+      "introduction": "Introduction.md",
+      "class": "VocaloidFormatSupport.VprFormat",
+      "assembly": "VocaloidFormatSupport.dll"
+    }
+  ]
+}

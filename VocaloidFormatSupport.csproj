@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- VOCALOID 格式支持插件（TuneLab2 V1 / format）：VSQX、VSQ、VPR 的导入与导出。
+       纯 C# 实现，无 C++ / 无原生依赖。AnyCPU。
+
+       SDK 引用：仅引用 TuneLab.Foundation + TuneLab.SDK，Private=false（不打进包，宿主提供）。
+       SDKPath 默认指向同级的 TuneLab2 检出；可用 -p:SDKPath=<path> 覆盖（例如指向已构建的 SDK 输出目录）。 -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>VocaloidFormatSupport</AssemblyName>
+    <RootNamespace>VocaloidFormatSupport</RootNamespace>
+    <!-- AnyCPU：不设 PlatformTarget / RuntimeIdentifier，保持平台中立。 -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- 输出即打包源：dll + manifest.json + introduction 直接落 bin/package。 -->
+    <OutputPath>$(MSBuildThisFileDirectory)bin\package\</OutputPath>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- 默认 SDK 检出路径（相对本工程）。 -->
+    <SDKPath Condition="'$(SDKPath)' == ''">$(MSBuildThisFileDirectory)..\TuneLab2</SDKPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 优先用 SDK 源码工程引用（存在时）；否则回退到已构建 DLL。 -->
+    <ProjectReference Include="$(SDKPath)\TuneLab.Foundation\TuneLab.Foundation.csproj" Private="false"
+                      Condition="Exists('$(SDKPath)\TuneLab.Foundation\TuneLab.Foundation.csproj')" />
+    <ProjectReference Include="$(SDKPath)\TuneLab.SDK\TuneLab.SDK.csproj" Private="false"
+                      Condition="Exists('$(SDKPath)\TuneLab.SDK\TuneLab.SDK.csproj')" />
+
+    <Reference Include="TuneLab.Foundation" Private="false"
+               Condition="!Exists('$(SDKPath)\TuneLab.Foundation\TuneLab.Foundation.csproj')">
+      <HintPath>$(SDKPath)\TuneLab.Foundation\bin\Release\net8.0\TuneLab.Foundation.dll</HintPath>
+    </Reference>
+    <Reference Include="TuneLab.SDK" Private="false"
+               Condition="!Exists('$(SDKPath)\TuneLab.SDK\TuneLab.SDK.csproj')">
+      <HintPath>$(SDKPath)\TuneLab.SDK\bin\Release\net8.0\TuneLab.SDK.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="manifest.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Introduction.md" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Introduction.md')" />
+  </ItemGroup>
+
+</Project>
